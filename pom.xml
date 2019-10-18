@@ -11,6 +11,8 @@
         <module>boha-registry</module>
         <module>boha-registry</module>
         <module>boha-gateway</module>
+        <module>boha-item</module>
+        <module>boha-common</module>
     </modules>
     <packaging>pom</packaging>
 
