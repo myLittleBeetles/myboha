@@ -1,8 +1,12 @@
 package com.boha.upload.service.impl;
 
 import com.boha.upload.service.UploadService;
+import com.github.tobato.fastdfs.domain.StorePath;
+import com.github.tobato.fastdfs.service.FastFileStorageClient;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,7 +18,10 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class UploadServiceImpl implements UploadService {
+public class UploadServiceImpl{
+
+    @Autowired
+    private FastFileStorageClient storageClient;
 
     private static final List<String> CONTENT_TYPES = Arrays.asList("image/jpeg", "image/gif");
 
@@ -40,10 +47,13 @@ public class UploadServiceImpl implements UploadService {
             }
 
             // 保存到服务器
-            file.transferTo(new File("E:\\boha\\images\\" + originalFilename));
+//            file.transferTo(new File("E:\\boha\\images\\" + originalFilename));
+            String ext = StringUtils.substringAfterLast(originalFilename, ".");
+            StorePath storePath = this.storageClient.uploadFile(file.getInputStream(), file.getSize(), ext, null);
 
             // 生成url地址，返回
-            return "http://image.boha.com/" + originalFilename;
+//            return "http://image.boha.com/" + originalFilename;
+            return "http://image.boha.com/" + storePath.getFullPath();
         } catch (IOException e) {
             LOGGER.info("服务器内部错误：{}", originalFilename);
             e.printStackTrace();
